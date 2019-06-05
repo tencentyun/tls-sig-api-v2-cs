@@ -1,7 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tls-sig-api-v2-cs", "tls-sig-api-v2-cs\tls-sig-api-v2-cs.csproj", "{D95F9481-1CED-4D4C-ABC9-E348C0634ED3}"
+VisualStudioVersion = 15.0.28307.645
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tls-sig-api-v2-cs", "tls-sig-api-v2-cs\tls-sig-api-v2-cs.csproj", "{D95F9481-1CED-4D4C-ABC9-E348C0634ED3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tls-sig-api-v2-test", "tls-sig-api-v2-test\tls-sig-api-v2-test.csproj", "{B55AC027-D2CB-4724-B847-F7CF657331D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,5 +16,15 @@ Global
 		{D95F9481-1CED-4D4C-ABC9-E348C0634ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D95F9481-1CED-4D4C-ABC9-E348C0634ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D95F9481-1CED-4D4C-ABC9-E348C0634ED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B55AC027-D2CB-4724-B847-F7CF657331D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B55AC027-D2CB-4724-B847-F7CF657331D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B55AC027-D2CB-4724-B847-F7CF657331D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B55AC027-D2CB-4724-B847-F7CF657331D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2DB2FC3A-CAA8-444A-AEB3-3C8478B127B1}
 	EndGlobalSection
 EndGlobal
