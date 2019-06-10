@@ -56,10 +56,7 @@ namespace tecentyun
                  + "TLS.expire:" + expire + "\n";
             using (HMACSHA256 hmac = new HMACSHA256())
             {
-                // change according to your needs, an UTF8Encoding
-                // could be more suitable in certain situations
                 UTF8Encoding encoding = new UTF8Encoding();
-
                 Byte[] textBytes = encoding.GetBytes(rawContentToBeSigned);
                 Byte[] keyBytes = encoding.GetBytes(key);
                 Byte[] hashBytes;
