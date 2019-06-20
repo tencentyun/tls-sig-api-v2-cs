@@ -48,12 +48,16 @@ namespace tecentyun
             output.Flush();
         }
 
-        private string HMACSHA256(string identifier, long currTime, int expire)
+        private string HMACSHA256(string identifier, long currTime, int expire, string base64UserBuf, bool userBufEnabled)
         {
             string rawContentToBeSigned = "TLS.identifier:" + identifier + "\n"
                  + "TLS.sdkappid:" + sdkappid + "\n"
                  + "TLS.time:" + currTime + "\n"
                  + "TLS.expire:" + expire + "\n";
+            if (true == userBufEnabled)
+            {
+                rawContentToBeSigned += "TLS.userbuf:" + base64UserBuf + "\n";
+            }
             using (HMACSHA256 hmac = new HMACSHA256())
             {
                 UTF8Encoding encoding = new UTF8Encoding();
@@ -66,25 +70,55 @@ namespace tecentyun
             }
         }
 
-        public string GenSig(string identifier, int expire=180*86400)
+        private string GenSig(string identifier, int expire, byte[] userbuf, bool userBufEnabled)
         {
             DateTime epoch = new DateTime(1970, 1, 1); // unix 时间戳
             Int64 currTime = (Int64)(DateTime.UtcNow - epoch).TotalMilliseconds / 1000;
 
-            string base64sig = HMACSHA256(identifier, currTime, expire);
+            string base64UserBuf;
+            string jsonData;
+            if (true == userBufEnabled)
+            {
+                base64UserBuf = Convert.ToBase64String(userbuf);
+                string base64sig = HMACSHA256(identifier, currTime, expire, base64UserBuf, userBufEnabled);
+                // 没有引入 json 库，所以这里手动进行组装
+                jsonData = String.Format("{{"
+                   + "\"TLS.ver\":" + "\"2.0\","
+                   + "\"TLS.identifier\":" + "\"{0}\","
+                   + "\"TLS.sdkappid\":" + "{1},"
+                   + "\"TLS.expire\":" + "{2},"
+                   + "\"TLS.time\":" + "{3},"
+                   + "\"TLS.sig\":" + "\"{4}\","
+                   + "\"TLS.userbuf\":" + "\"{5}\""
+                   + "}}", identifier, sdkappid, expire, currTime, base64sig, base64UserBuf);
+            }
+            else
+            {
+                // 没有引入 json 库，所以这里手动进行组装
+                string base64sig = HMACSHA256(identifier, currTime, expire, "", false);
+                jsonData = String.Format("{{"
+                    + "\"TLS.ver\":" + "\"2.0\","
+                    + "\"TLS.identifier\":" + "\"{0}\","
+                    + "\"TLS.sdkappid\":" + "{1},"
+                    + "\"TLS.expire\":" + "{2},"
+                    + "\"TLS.time\":" + "{3},"
+                    + "\"TLS.sig\":" + "\"{4}\""
+                    + "}}", identifier, sdkappid, expire, currTime, base64sig);
+            }
 
-            // 没有引入 json 库，所以这里手动进行组装
-            string jsonData = String.Format("{{"
-                + "\"TLS.ver\":" + "\"2.0\","
-                + "\"TLS.identifier\":" + "\"{0}\","
-                + "\"TLS.sdkappid\":" + "{1},"
-                + "\"TLS.expire\":" + "{2},"
-                + "\"TLS.time\":" + "{3},"
-                + "\"TLS.sig\":" + "\"{4}\""
-                + "}}", identifier, sdkappid, expire, currTime, base64sig);
             byte[] buffer = Encoding.UTF8.GetBytes(jsonData);
             return Convert.ToBase64String(CompressBytes(buffer))
                 .Replace('+', '*').Replace('/', '-').Replace('=', '_');
+        }
+
+        public string GenSig(string identifier, int expire = 180 * 86400)
+        {
+            return GenSig(identifier, expire, null, false);
+        }
+
+        public string GenSigWithUserBuf(string identifier, int expire, byte[] userbuf)
+        {
+            return GenSig(identifier, expire, userbuf, true);
         }
     }
 }

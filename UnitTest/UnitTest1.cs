@@ -23,5 +23,12 @@ namespace UnitTest
                 System.Console.WriteLine(sig);
             }
         }
+        [TestMethod]
+        public void TestMethod3()
+        {
+            TLSSigAPI api = new TLSSigAPI(1400000000, "5bd2850fff3ecb11d7c805251c51ee463a25727bddc2385f3fa8bfee1bb93b5e");
+            string sig = api.GenSigWithUserBuf("xiaojun", 86400*180, System.Text.Encoding.Default.GetBytes("abc"));
+            System.Console.WriteLine(sig);
+        }
     }
 }
