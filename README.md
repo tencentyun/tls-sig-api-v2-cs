@@ -16,13 +16,13 @@ PM> Install-Package tls-sig-api-v2
 多种命令行安装方式[这里](https://www.nuget.org/packages/tls-sig-api-v2)可以查看。
 
 ### 源码集成
-将 `tls-sig-api-v2-cs/TLSSigAPI.cs` 下载放置到开发者项目目录下，按照下述示例代码调用即可。
+将 `tls-sig-api-v2-cs/TLSSigAPIv2.cs` 下载放置到开发者项目目录下，按照下述示例代码调用即可。
 
 ## 使用
 ``` c#
 using tencentyun;
 
-TLSSigAPI api = new TLSSigAPI(1400000000, "5bd2850fff3ecb11d7c805251c51ee463a25727bddc2385f3fa8bfee1bb93b5e");
+TLSSigAPIv2 api = new TLSSigAPIv2(1400000000, "5bd2850fff3ecb11d7c805251c51ee463a25727bddc2385f3fa8bfee1bb93b5e");
 string sig = api.GenSig("xiaojun");
 System.Console.WriteLine(sig);
 ```

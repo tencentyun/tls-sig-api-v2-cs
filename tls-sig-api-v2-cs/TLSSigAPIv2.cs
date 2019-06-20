@@ -5,14 +5,14 @@ using System.Security.Cryptography;
 
 using ComponentAce.Compression.Libs.zlib;
 
-namespace tecentyun
+namespace tencentyun
 {
-    public class TLSSigAPI
+    public class TLSSigAPIv2
     {
         private readonly int sdkappid;
         private readonly string key;
 
-        public TLSSigAPI(int sdkappid, string key)
+        public TLSSigAPIv2(int sdkappid, string key)
         {
             this.sdkappid = sdkappid;
             this.key = key;
