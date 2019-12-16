@@ -17,7 +17,55 @@ namespace tencentyun
             this.sdkappid = sdkappid;
             this.key = key;
         }
+        public byte[] GetUserBuf(string account, uint dwAuthID,uint dwExpTime,uint dwPrivilegeMap,uint dwAccountType)
+        {
+            int length = 1+2+account.Length+20;
+            int offset = 0;
+            byte[] userBuf = new byte[length];
+            
+            userBuf[offset++]= 0;
 
+            userBuf[offset++] = (byte)((account.Length & 0xFF00) >> 8);
+            userBuf[offset++] = (byte)(account.Length & 0x00FF);
+                
+            byte[] accountByte = System.Text.Encoding.Default.GetBytes(account);
+            accountByte.CopyTo(userBuf, offset);
+            offset += account.Length;
+
+            //dwSdkAppid
+            userBuf[offset++] = (byte)((sdkappid & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((sdkappid & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((sdkappid & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(sdkappid & 0x000000FF);
+            
+            //dwAuthId
+            userBuf[offset++] = (byte)((dwAuthID & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((dwAuthID & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((dwAuthID & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(dwAuthID & 0x000000FF);
+                
+            //dwExpTime 不确定是直接填还是当前s数加上超时时间
+            //time_t now = time(0);
+            //uint32_t expiredTime = now + dwExpTime;
+            userBuf[offset++] = (byte)((dwExpTime & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((dwExpTime & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((dwExpTime & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(dwExpTime & 0x000000FF);
+
+            //dwPrivilegeMap     
+            userBuf[offset++] = (byte)((dwPrivilegeMap & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((dwPrivilegeMap & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((dwPrivilegeMap & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(dwPrivilegeMap & 0x000000FF);
+                
+            //dwAccountType
+            userBuf[offset++] = (byte)((dwAccountType & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((dwAccountType & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((dwAccountType & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(dwAccountType & 0x000000FF);
+
+            return userBuf;
+        }
         private static byte[] CompressBytes(byte[] sourceByte)
         {
             MemoryStream inputStream = new MemoryStream(sourceByte);

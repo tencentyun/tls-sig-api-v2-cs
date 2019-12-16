@@ -27,7 +27,9 @@ namespace UnitTest
         public void TestMethod3()
         {
             TLSSigAPIv2 api = new TLSSigAPIv2(1400000000, "5bd2850fff3ecb11d7c805251c51ee463a25727bddc2385f3fa8bfee1bb93b5e");
-            string sig = api.GenSigWithUserBuf("xiaojun", 86400*180, System.Text.Encoding.Default.GetBytes("abc"));
+            byte[] userbuf = api.GetUserBuf("xiaojun",10000,86400*180,255,0);
+            System.Console.WriteLine(userbuf);
+            string sig = api.GenSigWithUserBuf("xiaojun", 86400*180, userbuf);
             System.Console.WriteLine(sig);
         }
     }
