@@ -17,9 +17,10 @@ namespace tencentyun
             this.sdkappid = sdkappid;
             this.key = key;
         }
-        public byte[] GetUserBuf(string account, uint dwAuthID,uint dwExpTime,uint dwPrivilegeMap,uint dwAccountType)
+
+        public byte[] GetUserBuf(string account, uint authId, uint expireTime, uint privilegeBitMap, uint accountType)
         {
-            int length = 1+2+account.Length+20;
+            int length = 1 + 2 + account.Length + 20;
             int offset = 0;
             byte[] userBuf = new byte[length];
             
@@ -28,44 +29,38 @@ namespace tencentyun
             userBuf[offset++] = (byte)((account.Length & 0xFF00) >> 8);
             userBuf[offset++] = (byte)(account.Length & 0x00FF);
                 
-            byte[] accountByte = System.Text.Encoding.Default.GetBytes(account);
+            byte[] accountByte = System.Text.Encoding.UTF8.GetBytes(account);
             accountByte.CopyTo(userBuf, offset);
             offset += account.Length;
 
-            //dwSdkAppid
             userBuf[offset++] = (byte)((sdkappid & 0xFF000000) >> 24);
             userBuf[offset++] = (byte)((sdkappid & 0x00FF0000) >> 16);
             userBuf[offset++] = (byte)((sdkappid & 0x0000FF00) >> 8);
             userBuf[offset++] = (byte)(sdkappid & 0x000000FF);
             
-            //dwAuthId
-            userBuf[offset++] = (byte)((dwAuthID & 0xFF000000) >> 24);
-            userBuf[offset++] = (byte)((dwAuthID & 0x00FF0000) >> 16);
-            userBuf[offset++] = (byte)((dwAuthID & 0x0000FF00) >> 8);
-            userBuf[offset++] = (byte)(dwAuthID & 0x000000FF);
-                
-            //dwExpTime 不确定是直接填还是当前s数加上超时时间
-            //time_t now = time(0);
-            //uint32_t expiredTime = now + dwExpTime;
-            userBuf[offset++] = (byte)((dwExpTime & 0xFF000000) >> 24);
-            userBuf[offset++] = (byte)((dwExpTime & 0x00FF0000) >> 16);
-            userBuf[offset++] = (byte)((dwExpTime & 0x0000FF00) >> 8);
-            userBuf[offset++] = (byte)(dwExpTime & 0x000000FF);
+            userBuf[offset++] = (byte)((authId & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((authId & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((authId & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(authId & 0x000000FF);
 
-            //dwPrivilegeMap     
-            userBuf[offset++] = (byte)((dwPrivilegeMap & 0xFF000000) >> 24);
-            userBuf[offset++] = (byte)((dwPrivilegeMap & 0x00FF0000) >> 16);
-            userBuf[offset++] = (byte)((dwPrivilegeMap & 0x0000FF00) >> 8);
-            userBuf[offset++] = (byte)(dwPrivilegeMap & 0x000000FF);
+            userBuf[offset++] = (byte)((expireTime & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((expireTime & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((expireTime & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(expireTime & 0x000000FF);
+
+            userBuf[offset++] = (byte)((privilegeBitMap & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((privilegeBitMap & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((privilegeBitMap & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(privilegeBitMap & 0x000000FF);
                 
-            //dwAccountType
-            userBuf[offset++] = (byte)((dwAccountType & 0xFF000000) >> 24);
-            userBuf[offset++] = (byte)((dwAccountType & 0x00FF0000) >> 16);
-            userBuf[offset++] = (byte)((dwAccountType & 0x0000FF00) >> 8);
-            userBuf[offset++] = (byte)(dwAccountType & 0x000000FF);
+            userBuf[offset++] = (byte)((accountType & 0xFF000000) >> 24);
+            userBuf[offset++] = (byte)((accountType & 0x00FF0000) >> 16);
+            userBuf[offset++] = (byte)((accountType & 0x0000FF00) >> 8);
+            userBuf[offset++] = (byte)(accountType & 0x000000FF);
 
             return userBuf;
         }
+
         private static byte[] CompressBytes(byte[] sourceByte)
         {
             MemoryStream inputStream = new MemoryStream(sourceByte);
@@ -129,7 +124,8 @@ namespace tencentyun
             {
                 base64UserBuf = Convert.ToBase64String(userbuf);
                 string base64sig = HMACSHA256(identifier, currTime, expire, base64UserBuf, userBufEnabled);
-                // 没有引入 json 库，所以这里手动进行组装
+                // 没有引入 json 库，所以这里手动进行组装，
+                // 这里如果用户 identifier 中出现 json 元字符将会出错
                 jsonData = String.Format("{{"
                    + "\"TLS.ver\":" + "\"2.0\","
                    + "\"TLS.identifier\":" + "\"{0}\","
@@ -164,9 +160,9 @@ namespace tencentyun
             return GenSig(identifier, expire, null, false);
         }
 
-        public string GenSigWithUserBuf(string identifier, int expire, byte[] userbuf)
+        public string GenSigWithUserBuf(string identifier, int expire, byte[] userBuf)
         {
-            return GenSig(identifier, expire, userbuf, true);
+            return GenSig(identifier, expire, userBuf, true);
         }
     }
 }
