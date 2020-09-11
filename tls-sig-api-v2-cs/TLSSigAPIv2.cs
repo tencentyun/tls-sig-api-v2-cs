@@ -134,13 +134,12 @@ namespace tencentyun
         {
             int length = 1 + 2 + account.Length + 20;
             int offset = 0;
+            if(roomStr.Length > 0)
+                length = length + 2 + roomStr.Length;
             byte[] userBuf = new byte[length];
 
             if(roomStr.Length > 0)
-            {
                 userBuf[offset++] = 1;
-                length = length + 2 + roomStr.Length;
-            }
             else
                 userBuf[offset++] = 0;
 
