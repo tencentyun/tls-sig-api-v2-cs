@@ -5,6 +5,9 @@
 使用 Visual Studio 工具下的程序包管理器和 NuGet 命令行均可以集成。另外也可以下载源码直接集成。
 
 ### VS 集成
+
+推荐使用 Visual Studio 2017 及以上版本，如果版本过低不支持 NuGet，直接使用源码集成。
+
 在 Visual Studio 中按照 `工具`->`NuGet 包管理器`->`管理解决方案的 NuGet 程序包`，然后搜索 `tls-sig-api-v2` 进行安装。
 
 ### NuGet 命令行集成
@@ -16,7 +19,7 @@ PM> Install-Package tls-sig-api-v2
 多种命令行安装方式[这里](https://www.nuget.org/packages/tls-sig-api-v2)可以查看。
 
 ### 源码集成
-将 `tls-sig-api-v2-cs/TLSSigAPIv2.cs` 下载放置到开发者项目目录下，按照下述示例代码调用即可。
+将 `tls-sig-api-v2-cs/TLSSigAPIv2.cs` 下载放置到开发者项目目录下，手动下载依赖 zlib.net 开发库，按照下述示例代码调用即可。
 
 ## 使用
 ``` c#
